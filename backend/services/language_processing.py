@@ -2,15 +2,17 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 import umap
 from sklearn.cluster import KMeans
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import json
 import sys
 
-class EmbeddingService:
+class LanguageProcessingService:
     def __init__(self, model_name="all-mpnet-base-v2"):
         """Initialize the embedding service with a pre-trained model"""
         self.model = SentenceTransformer(model_name)
         self.umap_reducer = None
         self.kmeans = None
+        self.sentiment_analyzer = SentimentIntensityAnalyzer()
     
     def generate_embeddings(self, texts):
         """Generate embeddings for a list of texts"""
@@ -56,24 +58,15 @@ class EmbeddingService:
         return coordinates
     
     def calculate_sentiment(self, texts):
-        """Calculate sentiment scores for texts (simple approach)"""
-        # Simple sentiment calculation based on positive/negative words
-        positive_words = ['good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic', 'love', 'happy', 'joy', 'smile']
-        negative_words = ['bad', 'terrible', 'awful', 'hate', 'sad', 'angry', 'frustrated', 'disappointed', 'worried', 'scared']
-        
+        """Calculate sentiment scores using VADER (compound score in [-1, 1])."""
+        if not texts:
+            return []
+
         sentiments = []
         for text in texts:
-            text_lower = text.lower()
-            pos_count = sum(1 for word in positive_words if word in text_lower)
-            neg_count = sum(1 for word in negative_words if word in text_lower)
-            
-            if pos_count + neg_count == 0:
-                sentiment = 0.0  # Neutral
-            else:
-                sentiment = (pos_count - neg_count) / (pos_count + neg_count)
-            
-            sentiments.append(sentiment)
-        
+            scores = self.sentiment_analyzer.polarity_scores(text)
+            sentiments.append(float(scores.get('compound', 0.0)))
+
         return sentiments
     
     def process_chat_data(self, messages):
@@ -109,7 +102,7 @@ class EmbeddingService:
 def main():
     """Command line interface for processing chat data"""
     if len(sys.argv) != 2:
-        print("Usage: python generate_embedding.py <input_json>")
+        print("Usage: python language_processing.py <input_json>")
         sys.exit(1)
     
     try:
@@ -118,7 +111,7 @@ def main():
         messages = input_data.get('messages', [])
         
         # Process data
-        service = EmbeddingService()
+        service = LanguageProcessingService()
         processed_data = service.process_chat_data(messages)
         
         # Output results
@@ -144,3 +137,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

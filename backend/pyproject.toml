@@ -1,0 +1,33 @@
+[project]
+name = "tp-final"
+version = "0.1.0"
+description = "TP Final Project"
+authors = [
+    { name = "Your Name", email = "you@example.com" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "flask",
+    "flask-cors",
+    "sentence-transformers",
+    "scikit-learn",
+    "umap-learn",
+    "sqlite-vec",
+    "transformers",
+    "vaderSentiment"
+]
+
+packages = [{ include = "tp_final" }]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+[dependency-groups]
+dev = [
+    "ipykernel"
+]
+
+[tool.poetry]
+package-mode = false
