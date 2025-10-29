@@ -1,4 +1,4 @@
-import sqlite3
+import pysqlite3 as sqlite3
 import sqlite_vec
 import numpy as np
 import datetime

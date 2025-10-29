@@ -9,14 +9,16 @@ readme = "README.md"
 requires-python = ">=3.10"
 
 dependencies = [
-    "flask",
-    "flask-cors",
+    "flask (==3.0.0)",
+    "flask-cors (==4.0.0)",
     "sentence-transformers",
     "scikit-learn",
     "umap-learn",
     "sqlite-vec",
     "transformers",
-    "vaderSentiment"
+    "vaderSentiment",
+    "huggingface-hub (==0.20.3)",
+    "pysqlite3-binary (>=0.5.4,<0.6.0)"
 ]
 
 packages = [{ include = "tp_final" }]
